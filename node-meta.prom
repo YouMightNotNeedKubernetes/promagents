@@ -1,0 +1,1 @@
+node_meta{node_id="{{ env "NODE_ID" }}", container_label_com_docker_swarm_node_id="{{ env "NODE_ID" }}", node_name="{{ env "NODE_NAME" }}"} 1

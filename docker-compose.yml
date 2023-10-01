@@ -1,0 +1,81 @@
+version: '3.10'
+
+x-deploy-policy: &x-deploy-policy
+  mode: global
+  resources:
+    limits:
+      memory: 128M
+    reservations:
+      memory: 64M
+
+x-default-logging: &x-default-logging
+  options:
+    max-size: "12m"
+    max-file: "5"
+  driver: json-file
+
+services:
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    command: -logtostderr -docker_only
+    networks:
+      - docker_metrics
+    ports:
+      - 8080:8080
+    volumes:
+      - /:/rootfs:ro,rslave
+      - /sys:/sys:ro
+      - /var/run:/var/run:ro
+      - /sys:/host/sys:ro
+      - /dev/disk/:/dev/disk:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # - /etc/hostname:/etc/hostname:ro
+      # - /etc/machine-id:/etc/machine-id:ro
+      # - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
+    deploy: 
+      <<: *x-deploy-policy
+      labels:
+        io.prometheus.job: "cadvisor"
+    logging: *x-default-logging
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    networks:
+      - docker_metrics
+    command:
+      - '--path.rootfs=/rootfs'
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.textfile.directory=/etc/node-exporter/'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--no-collector.ipvs'
+    environment:
+      NODE_ID: "${NODE_ID:-{{.Node.ID}}}"
+      NODE_NAME: "${NODE_NAME:-{{.Node.Hostname}}}"
+    ports:
+      - 9100:9100
+    volumes:
+      - /:/host:ro,rslave
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+    configs:
+      - source: node-meta.prom
+        target: /etc/node-exporter/node-meta.prom
+    cap_add:
+      - "SYS_TIME"
+    deploy: 
+      <<: *x-deploy-policy
+      labels:
+        io.prometheus.job: "node-exporter"
+    logging: *x-default-logging
+
+networks:
+  docker_metrics:
+    name: docker_metrics
+    external: true
+
+configs:
+  node-meta.prom:
+    template_driver: golang
+    file: node-meta.prom
