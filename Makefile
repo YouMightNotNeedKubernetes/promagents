@@ -1,4 +1,4 @@
-docker_stack_name = metrics
+docker_stack_name = promagents
 
 
 it:
