@@ -19,7 +19,7 @@ services:
     image: gcr.io/cadvisor/cadvisor:latest
     command: -logtostderr -docker_only
     networks:
-      - docker_metrics
+      - dockerswarm_monitoring
     ports:
       - 8080:8080
     volumes:
@@ -42,7 +42,7 @@ services:
   node-exporter:
     image: prom/node-exporter:latest
     networks:
-      - docker_metrics
+      - dockerswarm_monitoring
     command:
       - '--path.rootfs=/rootfs'
       - '--path.procfs=/host/proc'
@@ -71,8 +71,8 @@ services:
     logging: *x-default-logging
 
 networks:
-  docker_metrics:
-    name: docker_metrics
+  dockerswarm_monitoring:
+    name: dockerswarm_monitoring
     external: true
 
 configs:
