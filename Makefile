@@ -2,9 +2,12 @@ docker_stack_name = promagents
 
 
 it:
-	@echo "make [deploy|destroy]"
+	@echo "make [configs|deploy|destroy]"
 
-deploy:
+configs:
+	@echo "No configs to generate [SKIP]"
+
+deploy: configs
 	docker stack deploy -c docker-compose.yml $(docker_stack_name)
 
 destroy:
