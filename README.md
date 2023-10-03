@@ -1,6 +1,14 @@
 # promagents
 Docker Stack deployment for cAdvisor & node-exporter.
 
+## Getting Started
+
+You might need to create swarm-scoped overlay network called `dockerswarm_monitoring` for all the stacks to communicate if you haven't already.
+
+```sh
+$ docker network create --driver overlay --attachable dockerswarm_monitoring
+```
+
 ## Deployment
 
 To deploy the stack, run the following command:
