@@ -14,7 +14,7 @@ $ docker network create --driver overlay --attachable dockerswarm_monitoring
 To deploy the stack, run the following command:
 
 ```sh
-make deploy
+$ make deploy
 ```
 
 ## Destroy
@@ -22,5 +22,5 @@ make deploy
 To destroy the stack, run the following command:
 
 ```sh
-make destroy
+$ make destroy
 ```
