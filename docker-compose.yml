@@ -16,7 +16,7 @@ x-default-logging: &x-default-logging
 
 services:
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+    image: gcr.io/cadvisor/cadvisor:${CADVISOR_VERSION:?Please set CADVISOR_VERSION environment variable}
     command: -logtostderr -docker_only
     networks:
       - dockerswarm_monitoring
@@ -39,7 +39,7 @@ services:
     logging: *x-default-logging
 
   node-exporter:
-    image: prom/node-exporter:latest
+    image: prom/node-exporter:${NODE_EXPORTER_VERSION:?Please set NODE_EXPORTER_VERSION environment variable}
     networks:
       - dockerswarm_monitoring
     command:

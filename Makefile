@@ -1,5 +1,7 @@
 docker_stack_name = promagents
 
+-include .env.default
+-include .env
 
 it:
 	@echo "make [configs|deploy|destroy]"
