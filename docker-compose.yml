@@ -43,11 +43,10 @@ services:
     networks:
       - dockerswarm_monitoring
     command:
-      - '--path.rootfs=/rootfs'
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - '--collector.textfile.directory=/etc/node-exporter/'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      # - '--collector.filesystem.fs-types-exclude=^(fakeowner|tmpfs|fuse\..+|virtiofs|autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$$'
+      - '--collector.textfile.directory=/etc/node-exporter/'
+      - '--path.rootfs=/rootfs'
       - '--no-collector.ipvs'
     environment:
       NODE_ID: "${NODE_ID:-{{.Node.ID}}}"
@@ -55,9 +54,7 @@ services:
     ports:
       - 9100:9100
     volumes:
-      - /:/rootfs:ro
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
+      - /:/rootfs:ro,rslave
     configs:
       - source: node-meta.prom
         target: /etc/node-exporter/node-meta.prom
