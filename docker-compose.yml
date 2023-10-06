@@ -29,9 +29,10 @@ services:
       - /dev/disk/:/dev/disk:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      # - /etc/hostname:/etc/hostname:ro
-      # - /etc/machine-id:/etc/machine-id:ro
-      # - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
+      # For Darwin comment out the following line
+      - /etc/hostname:/etc/hostname:ro
+      - /etc/machine-id:/etc/machine-id:ro
+      - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
     deploy: 
       <<: *x-deploy-policy
       labels:
@@ -44,7 +45,6 @@ services:
       - dockerswarm_monitoring
     command:
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-      # - '--collector.filesystem.fs-types-exclude=^(fakeowner|tmpfs|fuse\..+|virtiofs|autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$$'
       - '--collector.textfile.directory=/etc/node-exporter/'
       - '--path.rootfs=/rootfs'
       - '--no-collector.ipvs'
@@ -58,8 +58,6 @@ services:
     configs:
       - source: node-meta.prom
         target: /etc/node-exporter/node-meta.prom
-    cap_add:
-      - "SYS_TIME"
     deploy: 
       <<: *x-deploy-policy
       labels:
