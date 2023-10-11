@@ -15,30 +15,6 @@ x-default-logging: &x-default-logging
   driver: json-file
 
 services:
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:${CADVISOR_VERSION:?Please set CADVISOR_VERSION environment variable}
-    command: -logtostderr -docker_only
-    networks:
-      - dockerswarm_monitoring
-    ports:
-      - 8080:8080
-    volumes:
-      - /:/rootfs:ro
-      - /sys:/sys:ro
-      - /var/run:/var/run:ro
-      - /dev/disk/:/dev/disk:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      # For Darwin comment out the following line
-      - /etc/hostname:/etc/hostname:ro
-      - /etc/machine-id:/etc/machine-id:ro
-      - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
-    deploy: 
-      <<: *x-deploy-policy
-      labels:
-        io.prometheus.job: "cadvisor"
-    logging: *x-default-logging
-
   node-exporter:
     image: prom/node-exporter:${NODE_EXPORTER_VERSION:?Please set NODE_EXPORTER_VERSION environment variable}
     networks:
@@ -62,6 +38,32 @@ services:
       <<: *x-deploy-policy
       labels:
         io.prometheus.job: "node-exporter"
+    logging: *x-default-logging
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:${CADVISOR_VERSION:?Please set CADVISOR_VERSION environment variable}
+    command: -logtostderr -docker_only
+    networks:
+      - dockerswarm_monitoring
+    ports:
+      - 8080:8080
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /sys:/sys:ro
+      - /var/run:/var/run:ro
+      - /dev/disk/:/dev/disk:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # For Darwin comment out the following line
+      - /etc/hostname:/etc/hostname:ro
+      - /etc/machine-id:/etc/machine-id:ro
+      - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
+    deploy: 
+      <<: *x-deploy-policy
+      labels:
+        io.prometheus.job: "cadvisor"
     logging: *x-default-logging
 
 networks:
