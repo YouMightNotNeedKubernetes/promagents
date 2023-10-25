@@ -14,6 +14,16 @@ x-default-logging: &x-default-logging
     max-file: "5"
   driver: json-file
 
+networks:
+  dockerswarm_monitoring:
+    name: dockerswarm_monitoring
+    external: true
+
+configs:
+  node-meta.prom:
+    template_driver: golang
+    file: node-meta.prom
+
 services:
   node-exporter:
     image: prom/node-exporter:${NODE_EXPORTER_VERSION:?Please set NODE_EXPORTER_VERSION environment variable}
@@ -28,8 +38,6 @@ services:
       NODE_NAME: "${NODE_NAME:-{{.Node.Hostname}}}"
     networks:
       - dockerswarm_monitoring
-    ports:
-      - 9100:9100
     volumes:
       - /:/rootfs:ro,rslave
     configs:
@@ -38,6 +46,7 @@ services:
     deploy: 
       <<: *x-deploy-policy
       labels:
+        io.prometheus.enable: "true"
         io.prometheus.job: "node-exporter"
     logging: *x-default-logging
 
@@ -47,8 +56,6 @@ services:
     privileged: true
     networks:
       - dockerswarm_monitoring
-    ports:
-      - 8080:8080
     devices:
       - /dev/kmsg:/dev/kmsg
     volumes:
@@ -65,15 +72,6 @@ services:
     deploy: 
       <<: *x-deploy-policy
       labels:
+        io.prometheus.enable: "true"
         io.prometheus.job: "cadvisor"
     logging: *x-default-logging
-
-networks:
-  dockerswarm_monitoring:
-    name: dockerswarm_monitoring
-    external: true
-
-configs:
-  node-meta.prom:
-    template_driver: golang
-    file: node-meta.prom
