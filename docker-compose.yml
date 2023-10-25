@@ -50,7 +50,6 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:${CADVISOR_VERSION:?CADVISOR_VERSION env is not set}
     command: -logtostderr -docker_only
-    privileged: true
     networks:
       - dockerswarm_monitoring
     volumes:
