@@ -35,6 +35,8 @@ services:
       NODE_NAME: "${NODE_NAME:-{{.Node.Hostname}}}"
     networks:
       - prometheus_agents
+    ports:
+      - 9100:9100
     volumes:
       - /:/rootfs:ro,rslave
     configs:
@@ -44,8 +46,6 @@ services:
       <<: *x-deploy-policy
       labels:
         io.prometheus.enable: "true"
-        io.prometheus.job: "node-exporter"
-        io.prometheus.port: "9100"
     logging: *x-default-logging
 
   cadvisor:
@@ -53,6 +53,8 @@ services:
     command: -logtostderr -docker_only
     networks:
       - prometheus_agents
+    ports:
+      - 8080:8080
     volumes:
       - /:/rootfs:ro
       - /sys:/sys:ro
@@ -64,6 +66,4 @@ services:
       <<: *x-deploy-policy
       labels:
         io.prometheus.enable: "true"
-        io.prometheus.job: "cadvisor"
-        io.prometheus.port: "8080"
     logging: *x-default-logging
