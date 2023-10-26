@@ -44,7 +44,6 @@ services:
       <<: *x-deploy-policy
       labels:
         io.prometheus.enable: "true"
-        io.prometheus.job: "node-exporter"
         io.prometheus.port: "9100"
     logging: *x-default-logging
 
@@ -64,6 +63,5 @@ services:
       <<: *x-deploy-policy
       labels:
         io.prometheus.enable: "true"
-        io.prometheus.job: "cadvisor"
         io.prometheus.port: "8080"
     logging: *x-default-logging
