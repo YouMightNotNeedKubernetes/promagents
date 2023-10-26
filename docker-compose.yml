@@ -62,6 +62,8 @@ services:
       - /dev/disk/:/dev/disk:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    cap_add:
+      - "SYS_ADMIN"
     deploy: 
       <<: *x-deploy-policy
       labels:
