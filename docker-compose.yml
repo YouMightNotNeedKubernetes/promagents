@@ -45,7 +45,7 @@ services:
     deploy: 
       <<: *x-deploy-policy
       labels:
-        io.prometheus.enable: "true"
+        io.prometheus.enabled: "true"
     logging: *x-default-logging
 
   cadvisor:
@@ -67,5 +67,5 @@ services:
     deploy: 
       <<: *x-deploy-policy
       labels:
-        io.prometheus.enable: "true"
+        io.prometheus.enabled: "true"
     logging: *x-default-logging
